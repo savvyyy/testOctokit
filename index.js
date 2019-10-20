@@ -10,7 +10,7 @@ const octokit = new Octokit({
 // const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
 
 const webhooks = new WebhooksApi({
-  secret: 'e12f056cebe1056c0e5d5cd904983525cf2ab886'
+  secret: 'pass'
 })
 
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
