@@ -25,6 +25,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
   console.log("payloaddd", payload);
   if(name === "check_suite") {
     if(payload.action === "requested" || payload.action === "rerequested") {
+        console.log('if')
       let owner = payload.repository.name;
       let repo = payload.repository.full_name;
       let repoName = "HexaKit AI";
@@ -36,7 +37,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
         head_sha
       })
     }
-    else {
+    else {console.log('else')
       let owner = payload.repository.owner.name;
       let repo = payload.repository.full_name;
       let check_run_id = payload.check_run.id;
