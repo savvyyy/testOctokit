@@ -5,12 +5,13 @@ const Octokit = require("@octokit/rest");
 const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
 
 const webhooks = new WebhooksApi({
-  secret: 'passs'
+  secret: 'pass'
 })
 
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
+    console.log(event)
   const webhookEvent = JSON.parse(event.data)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
