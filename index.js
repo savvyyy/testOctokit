@@ -23,11 +23,13 @@ source.onmessage = (event) => {
 
 webhooks.on('check_suite', async ({ id, name, payload }) => {
     console.log(name, 'event received')
+    let owner = payload.repository.name
+    let repo = payload.repository.full_name
     let head_sha = payload.check_suite.head_sha
-    create_check_run(head_sha);
+    create_check_run(owner, repo, head_sha)
 })
 
-const create_check_run = (head_sha) => request('POST /repos/:owner/:repo/check-runs', {
+const create_check_run = (owner, repo, head_sha) => request(`POST /repos/${owner}/${repo}/check-runs`, {
     accept: 'application/vnd.github.antiope-preview+json',
     name: 'Audit Check',
     head_sha: head_sha
