@@ -44,6 +44,10 @@ webhooks.on('*', async ({ id, name, payload }) => {
     }
 })
 
+webhookProxyUrl.on('check_run', async({id, name, payload}) => {
+    console.log('check_run created')
+})
+
 const create = (params) => {
     console.log('params', params)
     octokit.checks.create(params)
