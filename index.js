@@ -27,7 +27,10 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
     let repo = payload.repository.full_name
     let head_sha = payload.check_suite.head_sha
     let repoName = 'Audit check'
-    create_check_run({owner, repo, name: repoName, head_sha})
+
+    if(payload.action === 'requested' || payload.action === 'rerequested') {
+        create_check_run({owner, repo, name: repoName, head_sha})
+    }
 })
 
 
