@@ -29,7 +29,9 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
     create_check_run(owner, repo, head_sha)
 })
 
-const create_check_run = (owner, repo, head_sha) => request(`POST /repos/${owner}/${repo}/check-runs`, {
+const create_check_run = (owner, repo, head_sha) => request('POST /repos/:owner/:repo/check-runs', {
+    owner,
+    repo, 
     accept: 'application/vnd.github.antiope-preview+json',
     name: 'Audit Check',
     head_sha: head_sha
