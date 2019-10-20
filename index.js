@@ -45,7 +45,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
     }
 })
 
-webhooks.on('check_run', async({id, name, payload}) => {
+webhooks.on('check_suite', async({id, name, payload}) => {
     console.log('check_run created')
 })
 
