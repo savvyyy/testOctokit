@@ -11,7 +11,7 @@ const app = new App({ id: process.env.GITHUB_APP_IDENTIFIER, privateKey: process
 const octokit = new Octokit({
     async auth() {
     const installationAccessToken = await app.getInstallationAccessToken({
-        installationId: process.env.INSTALLATION_ID
+        installationId: process.env.SECRET_TOKEN
     });
     return `token ${installationAccessToken}`;
     }
