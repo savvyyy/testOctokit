@@ -38,12 +38,12 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
       });
 })
 
-const create_check_run = async ({owner, repo, name, head_sha}) => await request(`POST /repos/${owner}/${repo}/check-runs`,{
+const create_check_run = ({owner, repo, name, head_sha}) => request(`POST /repos/${owner}/${repo}/check-runs`,{
     accept: 'application/vnd.github.antiope-preview+json',
     name,
     head_sha
 })
 
 webhooks.on('check_run', ({id,name,payload}) => {
-    console.log('check_run rcvddd.')
+    console.log(name, 'check_run rcvddd.')
 })
