@@ -26,16 +26,14 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
     let owner = payload.repository.name
     let repo = payload.repository.full_name
     let head_sha = payload.check_suite.head_sha
-    create_check_run(owner, repo, head_sha)
+    let repoName = 'Audit check'
+    create_check_run(owner, repo, repoName, head_sha)
 })
 
-const create_check_run = (owner, repo, head_sha) => request('POST /repos/:owner/:repo/check-runs', {
-    owner,
-    repo, 
-    accept: 'application/vnd.github.antiope-preview+json',
-    name: 'Audit Check',
-    head_sha: head_sha
-})
+
+const create_check_run = (params) => {
+    octokit.checks.create(params)
+}
 
 webhooks.on('check_run', async({ id, name, payload }) => {
     console.log(name, 'event recvddddd')
