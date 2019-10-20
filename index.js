@@ -28,6 +28,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
         let repoName = "Audit";
         let head_sha = payload.check_suite.head_sha
         if(payload.action === "requested" || payload.action === "rerequested") {
+            console.log('here')
             create({owner,repo,name:repoName,head_sha})
         }
         else {
