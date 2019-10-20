@@ -21,12 +21,12 @@ source.onmessage = (event) => {
 }
 
 webhooks.on('*', async ({ id, name, payload }) => {
-    let owner = payload.repository.name;
-    let repo = payload.repository.full_name;
-    let repoName = "Audit";
-    let head_sha = payload.check_suite.head_sha
     console.log(name, 'event received')
     if(name === "check_suite") {
+        let owner = payload.repository.name;
+        let repo = payload.repository.full_name;
+        let repoName = "Audit";
+        let head_sha = payload.check_suite.head_sha
         if(payload.action === "requested" || payload.action === "rerequested") {
             create({owner,repo,name:repoName,head_sha})
         }
