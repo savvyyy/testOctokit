@@ -1,7 +1,7 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
 const Octokit = require("@octokit/rest");
-const request = require('request')
+const request = require("@octokit/request");
 
 const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
 
@@ -21,7 +21,7 @@ source.onmessage = (event) => {
   }).catch(console.error)
 }
 
-webhooks.on('*', async ({ id, name, payload }) => {
+webhooks.on('check_suite', async ({ id, name, payload }) => {
     console.log(name, 'event received')
 
     if(payload.action === 'requested' || payload.action === 'rerequested') {
@@ -34,9 +34,11 @@ webhooks.on('*', async ({ id, name, payload }) => {
 })
 
 
-const create_check_run = (params) => {
-    octokit.checks.create(params)
-}
+const create_check_run = ({owner, repo, name, head_sha}) => octokit.request(`POST /repos/${owner}/${repo}/check-runs`, {
+    accept: 'application/vnd.github.antiope-preview+json',
+    name: 'Audit',
+    head_sha
+})
 
 webhooks.on('check_run', async({ id, name, payload }) => {
     console.log(name, 'event recvddddd')
