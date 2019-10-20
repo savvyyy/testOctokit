@@ -11,7 +11,6 @@ const webhooks = new WebhooksApi({
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
-    console.log(event)
   const webhookEvent = JSON.parse(event.data)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
@@ -23,4 +22,30 @@ source.onmessage = (event) => {
 
 webhooks.on('*', async ({ id, name, payload }) => {
   console.log(name, 'event received')
+  console.log("payloaddd", payload);
+  if(name === "check_suite") {
+    if(payload.action === "requested" || payload.action === "rerequested") {
+      let owner = payload.repository.name;
+      let repo = payload.repository.full_name;
+      let repoName = "HexaKit AI";
+      let head_sha = payload.check_suite.head_sha
+      octokit.checks.create({
+        owner,
+        repo,
+        name:repoName,
+        head_sha
+      })
+    }
+    else {
+      let owner = payload.repository.owner.name;
+      let repo = payload.repository.full_name;
+      let check_run_id = payload.check_run.id;
+      octokit.checks.update({
+        owner,
+        repo,
+        check_run_id
+      })
+    }
+    
+  }
 })
