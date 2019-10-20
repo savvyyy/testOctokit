@@ -4,10 +4,46 @@ const Octokit = require("@octokit/rest")
 const request = require("@octokit/request")
 const { App } = require("@octokit/app")
 
-
-const octokit = new Octokit({
-    auth: process.env.SECRET_TOKEN
+const app = new App({ 
+    id: process.env.GITHUB_APP_IDENTIFIER, 
+    privateKey: process.env.GITHUB_PRIVATE_KEY 
 });
+
+const getInstallationAccessTokenByInstallationId = async (installationId) => {
+    const installationAccessToken = await app.getInstallationAccessToken({
+        installationId,
+    });
+    return installationAccessToken;
+};
+
+const getInstallationAccessToken = async (owner, repo) => {
+    const { data } = await request(`https://api.github.com/repos/${owner}/${repo}/installation`,
+    {
+        headers: {
+        authorization: `Bearer ${app.getSignedJsonWebToken()}`,
+        accept: 'application/vnd.github.machine-man-preview+json',
+    },
+});
+
+const installationId = data.id;
+
+const installationAccessToken = await getInstallationAccessTokenByInstallationId(installationId);
+  return installationAccessToken;
+};
+
+const getInstallationClient = async (owner, repo) => {
+    const installationAccessToken = await getInstallationAccessToken(owner, repo);
+    return new Octokit({
+    auth() {
+        return `token ${installationAccessToken}`;
+    },
+    });
+};
+
+
+// const octokit = new Octokit({
+//     auth: process.env.SECRET_TOKEN
+// });
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
@@ -28,7 +64,6 @@ source.onmessage = (event) => {
   })
 }
 
-webhooks.on('check_suite', async ({ id, name, payload }) => {
+webhooks.on('*', async ({ id, name, payload }) => {
     console.log(name, 'event receivedd')
-    check_run();
 })
