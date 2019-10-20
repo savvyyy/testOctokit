@@ -24,7 +24,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
   console.log(name, 'event received')
   console.log("payloaddd", payload);
   if(name === "check_suite") {
-    console.log('hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    console.log('here');
     if(payload.action === "requested" || payload.action === "rerequested") {
       let owner = payload.repository.name;
       let repo = payload.repository.full_name;
