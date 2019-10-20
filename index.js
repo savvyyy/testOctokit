@@ -5,7 +5,7 @@ const Octokit = require("@octokit/rest");
 const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
 
 const webhooks = new WebhooksApi({
-  secret: 'pass'
+  secret: 'passs'
 })
 
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
