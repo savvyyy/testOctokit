@@ -66,4 +66,18 @@ source.onmessage = (event) => {
 
 webhooks.on('*', async ({ id, name, payload }) => {
     console.log(name, 'event receivedd')
+    let owner = payload.repository.name;
+    let repo = payload.repository.full_name;
+    let repoName = "HexaKit AI";
+    let head_sha = payload.check_suite.head_sha
+    create_check_run({
+        owner,
+        repo,
+        name:repoName,
+        head_sha
+      });
 })
+
+const create_check_run = (installationClient, params) => {
+    console.log('params', params)
+}
