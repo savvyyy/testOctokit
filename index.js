@@ -20,8 +20,6 @@ source.onmessage = (event) => {
   }).catch(console.error)
 }
 
-
-webhooks.on('check_suite', async({ id, name, payload }) => {
-    console.log('hereeeeeeeeeeeeeee')
-    console.log(event, 'event recieved')
+webhooks.on('check_suite', async ({ id, name, payload }) => {
+    console.log(name, 'event received')
 })
