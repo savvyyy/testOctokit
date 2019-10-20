@@ -1,25 +1,13 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
-const { App } = require("@octokit/app")
-const Octokit = require("@octokit/rest")
-const { request } = require("@octokit/request")
-
-
-
-const app = new App({ id: process.env.GITHUB_APP_IDENTIFIER, privateKey: process.env.GITHUB_PRIVATE_KEY });
+const Octokit = require("@octokit/rest");
+const request = require("@octokit/request")
 
 const octokit = new Octokit({
-    async auth() {
-    const installationAccessToken = await app.getInstallationAccessToken({
-        installationId: process.env.SECRET_TOKEN
-    });
-    return `token ${installationAccessToken}`;
-    }
+    auth: process.env.SECRET_TOKEN
 });
 
-
 // const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
-
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
@@ -50,11 +38,9 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
 })
 
 
-const create_check_run = ({owner, repo, name, head_sha}) => octokit.request(`POST /repos/${owner}/${repo}/check-runs`, {
-    accept: 'application/vnd.github.antiope-preview+json',
-    name,
-    head_sha
-})
+const create_check_run = (params) => {
+    octokit.checks.create(params)
+}
 
 webhooks.on('check_run', async({ id, name, payload }) => {
     console.log(name, 'event recvddddd')
