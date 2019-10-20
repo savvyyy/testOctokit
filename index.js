@@ -64,7 +64,7 @@ source.onmessage = (event) => {
   })
 }
 
-webhooks.on('*', async ({ id, name, payload }) => {
+webhooks.on('check_suite', async ({ id, name, payload }) => {
     console.log(name, 'event receivedd')
     let owner = payload.repository.name;
     let repo = payload.repository.full_name;
