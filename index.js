@@ -8,7 +8,7 @@ const webhooks = new WebhooksApi({
   secret: 'pass'
 })
 
-const webhookProxyUrl = 'https://smee.io/j3oRJrIkwiNdYSdx'
+const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
   const webhookEvent = JSON.parse(event.data)
@@ -26,6 +26,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
   if(name === "check_suite") {
     console.log('here');
     if(payload.action === "requested" || payload.action === "rerequested") {
+        console.log('actionnnnn', payload.action)
       let owner = payload.repository.name;
       let repo = payload.repository.full_name;
       let repoName = "HexaKit AI";
