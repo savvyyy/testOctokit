@@ -4,7 +4,7 @@ const Octokit = require("@octokit/rest");
 const request = require("@octokit/request")
 
 const octokit = new Octokit({
-    auth: process.env.GITHUB_PRIVATE_KEY
+    auth: process.env.SECRET_TOKEN
 });
 
 // const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
