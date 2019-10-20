@@ -1,12 +1,16 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
 const Octokit = require("@octokit/rest")
-// const request = require("@octokit/request")
+const request = require("@octokit/request")
 const { App } = require("@octokit/app")
-const request = require('request');
+// const request = require('request');
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
+})
+
+const octokit = new Octokit({
+    secret: 'pass'
 })
 
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
@@ -30,18 +34,16 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
     let repo = payload.repository.full_name;
     let repoName = "Audit";
     let head_sha = payload.check_suite.head_sha
-    create_check_run({
+    octokit.request({
+        method: 'POST',
+        url: '/repos/:owner/:repo/check-run',
+        headers: {
+            accept: 'application/vnd.github.antiope-preview+json',
+        },
         owner,
         repo,
-        name:repoName,
-        head_sha
-      });
-})
-
-const create_check_run = ({owner, repo, name, head_sha}) => request(`POST /repos/${owner}/${repo}/check-runs`,{
-    accept: 'application/vnd.github.antiope-preview+json',
-    name,
-    head_sha
+        head_sha,
+    });
 })
 
 webhooks.on('check_run', ({id,name,payload}) => {
