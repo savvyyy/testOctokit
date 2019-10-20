@@ -2,23 +2,24 @@ const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
 const { App } = require("@octokit/app")
 const Octokit = require("@octokit/rest")
-const request = require("@octokit/request")
+const { request } = require("@octokit/request")
 
-const app = new App({
-    id: process.env.GITHUB_APP_IDENTIFIER,
-    privateKey: process.env.GITHUB_PRIVATE_KEY
-});
+
+
+const app = new App({ id: process.env.GITHUB_APP_IDENTIFIER, privateKey: process.env.GITHUB_PRIVATE_KEY });
 
 const octokit = new Octokit({
     async auth() {
-        const installationAccessToken = await app.getInstallationAccessToken({
-        installationId: process.env.SECRET_TOKEN
-        });
-        return `token ${installationAccessToken}`;
+    const installationAccessToken = await app.getInstallationAccessToken({
+        installationId: process.env.INSTALLATION_ID
+    });
+    return `token ${installationAccessToken}`;
     }
 });
 
+
 // const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
+
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
@@ -37,7 +38,7 @@ source.onmessage = (event) => {
 }
 
 webhooks.on('check_suite', async ({ id, name, payload }) => {
-    console.log(name, 'event receivedd')
+    console.log(name, 'event received')
 
     if(payload.action === 'requested' || payload.action === 'rerequested') {
         let owner = payload.repository.name
