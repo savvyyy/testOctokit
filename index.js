@@ -21,32 +21,30 @@ source.onmessage = (event) => {
 }
 
 webhooks.on('*', async ({ id, name, payload }) => {
-  console.log(name, 'event received')
-  console.log("payloaddd", payload);
-  if(name === "check_suite") {
-    if(payload.action === "requested" || payload.action === "rerequested") {
-        console.log('if')
-      let owner = payload.repository.name;
-      let repo = payload.repository.full_name;
-      let repoName = "HexaKit AI";
-      let head_sha = payload.check_suite.head_sha
-      octokit.checks.create({
-        owner,
-        repo,
-        name:repoName,
-        head_sha
-      })
+    let owner = payload.repository.name;
+    let repo = payload.repository.full_name;
+    let repoName = "Audit";
+    let head_sha = payload.check_suite.head_sha
+    console.log(name, 'event received')
+    if(name === "check_suite") {
+        if(payload.action === "requested" || payload.action === "rerequested") {
+            create({owner,repo,name:repoName,head_sha})
+        }
+        else {
+            let owner = payload.repository.owner.name;
+            let repo = payload.repository.full_name;
+            let check_run_id = payload.check_run.id;
+            octokit.checks.update({
+                owner,
+                repo,
+                check_run_id
+            })
+        }
+        
     }
-    else {console.log('else')
-      let owner = payload.repository.owner.name;
-      let repo = payload.repository.full_name;
-      let check_run_id = payload.check_run.id;
-      octokit.checks.update({
-        owner,
-        repo,
-        check_run_id
-      })
-    }
-    
-  }
 })
+
+const create = (params) => {
+    console.log('params', params)
+    octokit.checks.create(params)
+}
