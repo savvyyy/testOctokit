@@ -28,7 +28,7 @@ webhooks.on('*', async ({ id, name, payload }) => {
       let repo = payload.repository.full_name;
       let repoName = "HexaKit AI";
       let head_sha = payload.check_suite.head_sha
-      const data = octokit.checks.create({
+      const data = await octokit.checks.create({
         owner,
         repo,
         name:repoName,
