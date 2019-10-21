@@ -11,6 +11,7 @@ const webhooks = new WebhooksApi({
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
+    console.log('event', event)
   const webhookEvent = JSON.parse(event.data)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
