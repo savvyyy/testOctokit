@@ -17,7 +17,9 @@ source.onmessage = (event) => {
     name: webhookEvent['x-github-event'],
     signature: webhookEvent['x-hub-signature'],
     payload: webhookEvent.body
-  }).catch(console.error)
+  }).catch(error => {
+      console.log('err', error)
+  })
 }
 
 webhooks.on('*', async ({ id, name, payload }) => {
