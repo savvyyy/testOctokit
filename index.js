@@ -3,11 +3,7 @@ const WebhooksApi = require('@octokit/webhooks')
 const {App} = require('@octokit/app');
 const {request} = require('@octokit/request')
 const config = require('config');
-const Octokit = require("@octokit/rest")
-const { endpoint } = require("@octokit/endpoint")
-const Hook = require('before-after-hook')
-
-const hook = new Hook.Singular()
+const Octokit = require("@octokit/rest");
 
 const APP_ID = config.GITHUB_APP_IDENTIFIER;
 const PRIVATE_KEY = config.GITHUB_PRIVATE_KEY;
@@ -37,59 +33,39 @@ const octokit =  new Octokit({
     }
 });
 
+const webhooks = new WebhooksApi({
+  secret: 'pass'
+})
+
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
   const webhookEvent = JSON.parse(event.data)
-  console.log('webhookEvent', webhookEvent)
+  webhooks.verifyAndReceive({
+    id: webhookEvent['x-request-id'],
+    name: webhookEvent['x-github-event'],
+    signature: webhookEvent['x-hub-signature'],
+    payload: webhookEvent.body
+  }).catch(error => {
+      console.log('err', error)
+  })
 }
 
+webhooks.on('check_suite', async ({ id, name, payload }) => {
+  if(name === "check_suite") {
+    if(payload.action === "requested" || payload.action === "rerequested") {
+        console.log('if')
+        let owner = "savvyyy";
+        let repo = payload.repository.name;
+        let repoName = "HexaKit AI";
+        let head_sha = payload.check_suite.head_sha
+    }
+  }
+})
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const Octokit = require('octokit')
-// const { createAppAuth } = require("@octokit/auth-app")
-// const config = require('config')
-// const client = new Octokit()
-
-// const APP_ID = config.GITHUB_APP_IDENTIFIER;
-// const PRIVATE_KEY = config.GITHUB_PRIVATE_KEY;
-
-// const client = new Octokit({
-//     timeout: 0,
-//     baseUrl: 'https://api.github.com/repos/savvyyy/testOctokit',
-//     auth: createAppAuth ({
-//         id: APP_ID,
-//         privateKey: PRIVATE_KEY
-//     }),
-//     headers: {
-//         accept: 'application/vnd.github.v3+json',
-//         'user-agent': 'octokit/rest.js v1.2.3',
-//     },
-// })
-
-
+webhooks.on('error', (error) => {
+    console.log('---- error callback ----');
+    console.log(`Error occured in "${error.event.name} handler: ${error.stack}"`)
+  })
+  
+  require('http').createServer(webhooks.middleware).listen(3000)
