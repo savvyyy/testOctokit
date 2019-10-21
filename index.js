@@ -12,7 +12,6 @@ const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
   const webhookEvent = JSON.parse(event.data)
-  console.log('event', webhookEvent)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
     name: webhookEvent['x-github-event'],
@@ -45,3 +44,10 @@ webhooks.on('*', async ({ id, name, payload }) => {
     
   }
 })
+
+webhooks.on('error', (error) => {
+    console.log('---- error callback ----');
+    console.log(`Error occured in "${error.event.name} handler: ${error.stack}"`)
+  })
+  
+  require('http').createServer(webhooks.middleware).listen(3000)
