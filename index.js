@@ -29,10 +29,7 @@ source.onmessage = (event) => {
         name: webhookEvent['x-github-event'],
         signature: webhookEvent['x-hub-signature'],
         payload: webhookEvent.body
-    }).catch(error => {
-        console.log('error', error)
-        Promise.reject()
-    })
+    }).catch(console.error)
 }
 
 webhooks.on('check_suite', async ({id,name,payload}) => {
@@ -41,5 +38,8 @@ webhooks.on('check_suite', async ({id,name,payload}) => {
     let repoName = "Audit";
     let head_sha = payload.check_suite.head_sha
 
-    octokit.checks.create({owner, repo, name: repoName, head_sha})
+    if(payload.action == 'requested' || payload.action == 'rerequested') {
+        console.log('if')
+        octokit.checks.create({owner, repo, name: repoName, head_sha})
+    }
 })
