@@ -40,7 +40,7 @@ webhooks.on('check_suite', async ({id,name,payload}) => {
     let head_sha = payload.check_suite.head_sha
 
     if(payload.action == 'requested' || payload.action == 'rerequested') {
-        console.log('if')
+        console.log('ifff')
         octokit.request({
             method: 'POST',
             // https://github.com/octokit/rest.js/issues/862
