@@ -24,12 +24,7 @@ getID = async () => {
 }
 const installationId = getID();
 
-
-
-
-
 const octokit =  new Octokit({
-
     async auth() {
         const installationAccessToken = await app.getInstallationAccessToken({
             installationId: installationId
@@ -46,6 +41,7 @@ const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
   const webhookEvent = JSON.parse(event.data)
+  console.log('webhookEvent', webhookEvent)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
     name: webhookEvent['x-github-event'],
