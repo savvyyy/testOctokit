@@ -24,11 +24,20 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
 
     if(payload.action == 'requested' || payload.action == 'rerequested') {
         console.log('iffff')
-        const EventHandler = new EventHandler({
-            async transform(event) {
-                console.log('event', event);
-                return event;
-            }
+        const EventHandler = require('@octokit/webhooks/event-handler')
+        const eventHandler = new EventHandler({
+        async transform (event) {
+            // optionally transform passed event before handlers are called
+            return event
+        }
         })
+        eventHandler.on('installation', asyncInstallationHook)
+
+        // put this inside your webhooks route handler
+        eventHandler.receive({
+            id: request.headers['x-github-delivery'],
+            name: request.headers['x-github-event'],
+            payload: request.body
+        }).catch(handleErrorsFromHooks)
     }
 })
