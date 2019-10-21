@@ -14,6 +14,7 @@ const octokit = new Octokit({
         const installationAccessToken = await app.getInstallationAccessToken({
             installationId: process.env.INSTALLATION_ID
         });
+        console.log('installationAccessToken', installationAccessToken)
         return `token ${installationAccessToken}`;
     }
 });
