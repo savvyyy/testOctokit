@@ -41,7 +41,6 @@ const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
 const source = new EventSource(webhookProxyUrl)
 source.onmessage = (event) => {
   const webhookEvent = JSON.parse(event.data)
-  console.log('webhookEvent', webhookEvent)
   webhooks.verifyAndReceive({
     id: webhookEvent['x-request-id'],
     name: webhookEvent['x-github-event'],
@@ -56,17 +55,23 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
   if(name === "check_suite") {
     if(payload.action === "requested" || payload.action === "rerequested") {
         console.log('if')
-      let owner = "savvyyy";
-      let repo = payload.repository.name;
-      let repoName = "HexaKit AI";
-      let head_sha = payload.check_suite.head_sha
-      const data = await octokit.checks.create({
-        owner,
-        repo,
-        name: repoName,
-        head_sha
-      })
-      console.log('data', data)
+        let owner = "savvyyy";
+        let repo = payload.repository.name;
+        let repoName = "HexaKit AI";
+        let head_sha = payload.check_suite.head_sha
+        const data = octokit.request({
+            method: 'POST',
+            // https://github.com/octokit/rest.js/issues/862
+            url: '/repos/:owner/:repo/check-runs',
+            headers: {
+                accept: 'application/vnd.github.antiope-preview+json',
+            },
+            owner,
+            repo,
+            name,
+            head_sha,
+        });
+        console.log('data', data)
     }
     else {
       console.log('else')
