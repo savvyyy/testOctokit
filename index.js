@@ -1,5 +1,6 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
+const EventHandler = require('@octokit/webhooks/event-handler')
 
 const webhooks = new WebhooksApi({ secret: 'pass'});
 
@@ -23,5 +24,11 @@ webhooks.on('check_suite', async ({ id, name, payload }) => {
 
     if(payload.action == 'requested' || payload.action == 'rerequested') {
         console.log('iffff')
+        const EventHandler = new EventHandler({
+            async transform(event) {
+                console.log('event', event);
+                return event;
+            }
+        })
     }
 })
