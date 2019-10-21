@@ -2,7 +2,7 @@ const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
 const Octokit = require("@octokit/rest");
 
-const octokit =  new Octokit({ auth: { username: "octocat", password: "secret"}});
+const octokit =  new Octokit({ auth: { username: "savvyyy", password: "adityaR4675B"}});
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
