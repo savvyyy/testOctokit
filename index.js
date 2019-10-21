@@ -56,7 +56,7 @@ source.onmessage = (event) => {
   })
 }
 
-webhooks.on('*', async ({ id, name, payload }) => {
+webhooks.on('check_suite', async ({ id, name, payload }) => {
   if(name === "check_suite") {
     if(payload.action === "requested" || payload.action === "rerequested") {
         console.log('if')
