@@ -34,7 +34,7 @@ const octokit =  new Octokit({
 });
 
 const webhooks = new WebhooksApi({
-  secret: 'pass'
+  secret: installationId
 })
 
 const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
