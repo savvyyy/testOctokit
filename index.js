@@ -40,6 +40,17 @@ webhooks.on('check_suite', async ({id,name,payload}) => {
 
     if(payload.action == 'requested' || payload.action == 'rerequested') {
         console.log('if')
-        octokit.checks.create({owner, repo, name: repoName, head_sha})
+        octokit.request({
+            method: 'POST',
+            // https://github.com/octokit/rest.js/issues/862
+            url: '/repos/:owner/:repo/check-runs',
+            headers: {
+                accept: 'application/vnd.github.antiope-preview+json',
+            },
+            owner,
+            repo,
+            name: repoName,
+            head_sha,
+        });
     }
 })
