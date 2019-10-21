@@ -1,8 +1,8 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
-// const Octokit = require("@octokit/rest");
+const Octokit = require("@octokit/rest");
 
-// const octokit =  new Octokit({ auth: { username: "savvyyy", password: "adityaR4675B"}});
+const octokit =  new Octokit({ auth: { username: "savvyyy", password: "adityaR4675B"}});
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
@@ -23,16 +23,24 @@ source.onmessage = (event) => {
 }
 
 webhooks.on('*', async ({ id, name, payload }) => {
-    console.log(name, 'event recvd')
   if(name === "check_suite") {
     if(payload.action === "requested" || payload.action === "rerequested") {
         console.log('if')
-      let owner = payload.repository.name;
-      let repo = payload.repository.full_name;
+      let owner = "savvyyy";
+      let repo = payload.repository.name;
       let repoName = "HexaKit AI";
       let head_sha = payload.check_suite.head_sha
+      const data = await octokit.checks.create({
+        owner,
+        repo,
+        name: repoName,
+        head_sha
+      })
+      console.log('data', data)
     }
-    
+    else {
+      console.log('else')
+    }
     
   }
 })
