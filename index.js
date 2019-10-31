@@ -20,7 +20,7 @@ source.onmessage = (event) => {
 }
 
 webhooks.on('*', (event) => {
-  console.log('event', event)
+  console.log('event', event.name)
 })
 
 require('http').createServer(webhooks.middleware).listen(3000)
