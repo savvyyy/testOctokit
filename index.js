@@ -8,30 +8,7 @@ const Octokit = require("@octokit/rest");
 const APP_ID = config.GITHUB_APP_IDENTIFIER;
 const PRIVATE_KEY = config.GITHUB_PRIVATE_KEY;
 const app = new App({id: APP_ID, privateKey: PRIVATE_KEY});
-const jwt = app.getSignedJsonWebToken();
 
-getID = async () => {
-    const {data} = await request("GET /repos/:owner/:repo/installation", {
-        owner: "savvyyy",
-        repo: "testOctokit",
-        headers: {
-          authorization: `Bearer ${jwt}`,
-          accept: "application/vnd.github.machine-man-preview+json"
-        }
-      })
-    const installationId = data.id; 
-    return installationId;
-}
-const installationId = getID();
-
-const octokit =  new Octokit({
-    async auth() {
-        const installationAccessToken = await app.getInstallationAccessToken({
-            installationId: installationId
-        });
-        return `token ${installationId}`;
-    }
-});
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
@@ -51,21 +28,8 @@ source.onmessage = (event) => {
   })
 }
 
-webhooks.on('check_suite', async ({ id, name, payload }) => {
-  if(name === "check_suite") {
-    if(payload.action === "requested" || payload.action === "rerequested") {
-        console.log('inside if')
-        let owner = "savvyyy";
-        let repo = payload.repository.name;
-        let repoName = "HexaKit AI";
-        let head_sha = payload.check_suite.head_sha
-    }
-  }
+webhooks.on('*', (event) => {
+  console.log('event', event)
 })
 
-webhooks.on('error', (error) => {
-    console.log('---- error callback ----');
-    console.log(`Error occured in "${error.event.name} handler: ${error.stack}"`)
-  })
-  
-  require('http').createServer(webhooks.middleware).listen(3000)
+require('http').createServer(webhooks.middleware).listen(3000)
