@@ -54,7 +54,7 @@ source.onmessage = (event) => {
 webhooks.on('check_suite', async ({ id, name, payload }) => {
   if(name === "check_suite") {
     if(payload.action === "requested" || payload.action === "rerequested") {
-        console.log('if')
+        console.log('inside if')
         let owner = "savvyyy";
         let repo = payload.repository.name;
         let repoName = "HexaKit AI";
