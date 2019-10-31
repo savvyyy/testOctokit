@@ -1,14 +1,5 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
-const {App} = require('@octokit/app');
-const {request} = require('@octokit/request')
-const config = require('config');
-const Octokit = require("@octokit/rest");
-
-const APP_ID = config.GITHUB_APP_IDENTIFIER;
-const PRIVATE_KEY = config.GITHUB_PRIVATE_KEY;
-const app = new App({id: APP_ID, privateKey: PRIVATE_KEY});
-
 
 const webhooks = new WebhooksApi({
   secret: 'pass'
