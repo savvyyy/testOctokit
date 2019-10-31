@@ -35,4 +35,4 @@ const octokit =  new Octokit({
 });
 
 
-console.log('hiiiiiiii')
+console.log('hiii')
