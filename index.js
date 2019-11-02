@@ -1,27 +1,38 @@
 const EventSource = require('eventsource');
 const WebhooksApi = require('@octokit/webhooks')
+const {App} = require('@octokit/app');
+const {request} = require('@octokit/request')
+const config = require('config');
+const Octokit = require("@octokit/rest");
 
-const webhooks = new WebhooksApi({ secret: 'pass'});
+const APP_ID = config.GITHUB_APP_IDENTIFIER;
+const PRIVATE_KEY = config.GITHUB_PRIVATE_KEY;
+const proxy = config.HTTP_PROXY;
+const app = new App({id: APP_ID, privateKey: PRIVATE_KEY});
+const jwt = app.getSignedJsonWebToken();
 
-const webhookProxyUrl = 'https://smee.io/cPuF5CJ9D3lTauuk'
-const source = new EventSource(webhookProxyUrl)
-source.onmessage = (event) => {
-    const webhookEvent = JSON.parse(event.data)
-    webhooks.verifyAndReceive({
-        id: webhookEvent['x-request-id'],
-        name: webhookEvent['x-github-event'],
-        signature: webhookEvent['x-hub-signature'],
-        payload: webhookEvent.body
-    }).catch(console.error)
+getID = async () => {
+    const {data} = await request("GET /repos/:owner/:repo/installation", {
+        owner: "savvyyy",
+        repo: "testOctokit",
+        headers: {
+          authorization: `Bearer ${jwt}`,
+          accept: "application/vnd.github.machine-man-preview+json"
+        }
+      })
+    const installationId = data.id; 
+    return installationId;
 }
+const installationId = getID();
 
-webhooks.on('check_suite', async ({ id, name, payload }) => {
-    let owner = payload.repository.name;
-    let repo = payload.repository.full_name;
-    let repoName = "Audit";
-    let head_sha = payload.check_suite.head_sha
-
-    if(payload.action == 'requested' || payload.action == 'rerequested') {
-        console.log('iffff')
+const octokit =  new Octokit({
+    async auth() {
+        const installationAccessToken = await app.getInstallationAccessToken({
+            installationId: installationId
+        });
+        return `token ${installationAccessToken}`;
     }
-})
+});
+
+
+console.log('hiiiiiiiiiiiiiiiiiii')
